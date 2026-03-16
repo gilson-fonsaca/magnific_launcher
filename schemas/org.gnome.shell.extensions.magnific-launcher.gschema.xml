@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.magnific-launcher"
+          path="/org/gnome/shell/extensions/magnific-launcher/">
+
+    <key name="zoom-pixels" type="i">
+      <default>8</default>
+      <range min="2" max="128"/>
+      <summary>Zoom amount (pixels)</summary>
+      <description>
+        Number of extra pixels added to the hovered icon's size.
+        The zoom scale is computed at runtime as (iconSize + zoomPixels) / iconSize,
+        so the visual growth is always the same absolute pixel amount regardless of
+        the icon size setting. Neighbour icons are reduced by 0.10 per ring.
+      </description>
+    </key>
+
+    <key name="neighbour-step" type="d">
+      <default>0.10</default>
+      <range min="0.0" max="0.50"/>
+      <summary>Neighbour scale step</summary>
+      <description>
+        Scale reduction applied to each ring of icons around the hovered icon.
+        0.0 means all visible icons zoom equally (no wave), 0.50 means only the
+        immediate neighbours receive any zoom. Intermediate values create a wider
+        or narrower wave effect.
+      </description>
+    </key>
+
+    <key name="sharp-scaling" type="b">
+      <default>false</default>
+      <summary>Sharp scaling filter</summary>
+      <description>
+        When enabled, icons use nearest-neighbour (point) scaling instead of the
+        default bilinear filter. This produces pixel-sharp edges but may look
+        jagged at non-integer zoom levels. Disable for smooth (blended) scaling.
+      </description>
+    </key>
+
+    <key name="anim-duration" type="i">
+      <default>120</default>
+      <range min="50" max="500"/>
+      <summary>Animation duration (milliseconds)</summary>
+      <description>
+        Duration of the magnification ease animation in milliseconds.
+      </description>
+    </key>
+
+    <key name="restore-delay" type="i">
+      <default>40</default>
+      <range min="0" max="200"/>
+      <summary>Restore delay (milliseconds)</summary>
+      <description>
+        Delay in milliseconds before icons return to normal scale after
+        the pointer leaves the dock area.
+      </description>
+    </key>
+
+  </schema>
+</schemalist>
