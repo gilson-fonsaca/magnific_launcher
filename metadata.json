@@ -3,7 +3,7 @@
   "description": "Adds a macOS-like magnification wave effect to dock icons on hover. Compatible with Dash to Dock, Dash to Panel, and the default GNOME dash.",
   "uuid": "magnific-launcher@gilsonf",
   "version": 1,
-  "shell-version": ["47", "48", "49"],
+  "shell-version": ["47", "48", "49", "50"],
   "url": "https://github.com/gilson-fonsaca/magnific_launcher",
   "settings-schema": "org.gnome.shell.extensions.magnific-launcher"
 }
