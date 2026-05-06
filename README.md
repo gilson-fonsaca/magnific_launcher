@@ -6,6 +6,14 @@ The hovered icon grows by a configurable number of pixels and neighbouring icons
 
 ---
 
+## Support
+
+If this extension helps you, consider buying me a coffee:
+
+[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/Gilsonf)
+
+---
+
 ## Features
 
 - Smooth wave magnification on hover
