@@ -199,8 +199,7 @@ class DockMagnifier {
         /** Signal connection ids keyed by the actor they were connected on. */
         this._signalIds = [];   // [{actor, id}, …]
 
-        // Watch for the event actor being destroyed so we can self-detach cleanly.
-        this._destroyId = this.eventActor.connect('destroy', () => this._onEventActorDestroyed());
+        // Connected in attach() so all signals share the same disconnect path.
     }
 
     // ── Lifecycle ──────────────────────────────────────────────────────────────
@@ -211,6 +210,7 @@ class DockMagnifier {
         this._refreshIconCache();
 
         try {
+            this._connect(this.eventActor, 'destroy', this._onEventActorDestroyed.bind(this));
             this._connect(this.eventActor, 'enter-event', this._onEnter.bind(this));
             this._connect(this.eventActor, 'leave-event', this._onLeave.bind(this));
             this._connect(this.eventActor, 'motion-event', this._onMotion.bind(this));
@@ -239,14 +239,6 @@ class DockMagnifier {
     detach() {
         this._cancelRestoreTimeout();
 
-        // Disconnect the destroy watcher first.
-        if (this._destroyId !== null) {
-            if (_isActorAlive(this.eventActor)) {
-                try { this.eventActor.disconnect(this._destroyId); } catch (_) {}
-            }
-            this._destroyId = null;
-        }
-
         // Restore icons before disconnecting so they don't stay enlarged.
         this._restoreAllImmediate();
 
@@ -264,7 +256,6 @@ class DockMagnifier {
     /** Called when the event actor is destroyed by the dock itself. */
     _onEventActorDestroyed() {
         this._cancelRestoreTimeout();
-        this._destroyId = null;
         this._signalIds = [];
         this._icons = [];
         this._hoveredIndex = -1;
