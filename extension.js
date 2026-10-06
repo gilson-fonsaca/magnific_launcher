@@ -34,6 +34,9 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
  */
 let _settings = null;
 
+/** Children narrower than this (e.g. the dock separator) are not icons. */
+const MIN_ICON_WIDTH = 16;
+
 // ─── Main extension class ─────────────────────────────────────────────────────
 
 export default class MagnificLauncher extends Extension {
@@ -266,8 +269,11 @@ class DockMagnifier {
     _refreshIconCache() {
         if (!_isActorAlive(this._iconsActor)) return;
         // Keep only visible children that look like icon buttons.
+        // The pinned/running separator is a thin St.Widget in the same box;
+        // magnifying it would produce a huge scale (zoom / tiny width).
         this._icons = this._iconsActor.get_children().filter(child => {
-            return child.visible && child.get_width() > 0;
+            return child.visible && child.get_width() >= MIN_ICON_WIDTH &&
+                !child.has_style_class_name?.('dash-separator');
         });
     }
 
@@ -359,7 +365,7 @@ class DockMagnifier {
 
         // Derive the target scale from the hovered icon's current pixel width.
         const hoveredIcon = this._icons[hoveredIdx];
-        const iconSize = (_isActorAlive(hoveredIcon) && hoveredIcon.get_width() > 0)
+        const iconSize = (_isActorAlive(hoveredIcon) && hoveredIcon.get_width() >= MIN_ICON_WIDTH)
             ? hoveredIcon.get_width()
             : 48; // safe fallback
         const hoveredScale = (iconSize + zoomPx) / iconSize;
