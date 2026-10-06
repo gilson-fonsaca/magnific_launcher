@@ -42,6 +42,19 @@ export default class MagnificLauncher extends Extension {
         this._controllers = [];
         this._attachToDocks();
 
+        // At login the dock may still be settling when we attach, so rebuild
+        // once the shell has finished starting up.
+        if (Main.layoutManager._startingUp) {
+            this._startupCompleteId = Main.layoutManager.connect('startup-complete', () => {
+                this._startupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+                    this._startupTimeoutId = null;
+                    this._detachAll();
+                    this._attachToDocks();
+                    return GLib.SOURCE_REMOVE;
+                });
+            });
+        }
+
         // Re-attach if the shell layout changes (e.g. a dock extension enables later).
         this._overviewHiddenId = Main.overview.connect('hidden', () => {
             this._detachAll();
@@ -50,6 +63,14 @@ export default class MagnificLauncher extends Extension {
     }
 
     disable() {
+        if (this._startupCompleteId) {
+            Main.layoutManager.disconnect(this._startupCompleteId);
+            this._startupCompleteId = null;
+        }
+        if (this._startupTimeoutId) {
+            GLib.source_remove(this._startupTimeoutId);
+            this._startupTimeoutId = null;
+        }
         if (this._overviewHiddenId) {
             Main.overview.disconnect(this._overviewHiddenId);
             this._overviewHiddenId = null;
